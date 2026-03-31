@@ -20,6 +20,18 @@
   html { scroll-behavior: smooth; }
   body { background: var(--bg); color: var(--dark); font-family: 'Sora', sans-serif; font-weight: 300; }
 
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, #0057ff 0%, #00a7ff 100%);
+    z-index: 999;
+    box-shadow: 0 1px 8px rgba(0, 87, 255, 0.35);
+    transition: width 0.08s linear;
+  }
+
   /* TOP BAR */
   .topbar {
     background: var(--dark); color: rgba(255,255,255,0.55);
@@ -52,30 +64,102 @@
   /* HERO */
   .hero {
     display: grid; grid-template-columns: 1fr 1fr;
-    min-height: 88vh; background: var(--white);
+    min-height: 20vh; background: var(--white);
     border-bottom: 1px solid var(--border); overflow: hidden;
   }
-  .hero-left { padding: 80px 64px; display: flex; flex-direction: column; justify-content: center; }
+  .hero-left { padding: 12px 56px; display: flex; flex-direction: column; justify-content: center; }
   .hero-tag {
     display: inline-flex; align-items: center; gap: 8px;
     font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 2px;
-    color: var(--muted); text-transform: uppercase; margin-bottom: 28px;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 8px;
   }
   .hero-tag::before { content: ''; width: 20px; height: 1px; background: var(--muted); }
-  .hero h1 { font-size: clamp(40px,5vw,60px); font-weight: 600; line-height: 1.1; color: var(--dark); letter-spacing: -1.5px; margin-bottom: 20px; }
-  .hero-sub { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 380px; margin-bottom: 44px; }
-  .hero-actions { display: flex; gap: 12px; }
+  .hero h1 { font-size: clamp(34px,4.1vw,50px); font-weight: 600; line-height: 1.0; color: var(--dark); letter-spacing: -1.3px; margin-bottom: 4px; }
+  .hero-sub { font-size: 15px; color: var(--muted); line-height: 1.4; max-width: 360px; margin-bottom: 8px; }
+  .hero-actions { display: flex; gap: 10px; }
   .btn-dark { background: var(--dark); color: #fff; border: none; padding: 14px 28px; border-radius: 6px; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; transition: opacity 0.2s; }
   .btn-dark:hover { opacity: 0.8; }
   .btn-outline { background: transparent; color: var(--dark); border: 1px solid var(--border); padding: 14px 28px; border-radius: 6px; font-family: 'Sora', sans-serif; font-size: 14px; cursor: pointer; text-decoration: none; display: inline-block; transition: border-color 0.2s; }
   .btn-outline:hover { border-color: var(--dark); }
   .hero-right {
     background: var(--bg); border-left: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center; padding: 60px; position: relative; overflow: hidden;
+    display: flex; align-items: stretch; justify-content: stretch; padding: 0; position: relative; overflow: hidden;
   }
   .hero-right::before { content: ''; position: absolute; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle,rgba(0,87,255,0.07) 0%,transparent 70%); top:50%; left:50%; transform: translate(-50%,-50%); }
-  .hero-drone-wrap { animation: float 5s ease-in-out infinite; position: relative; z-index: 1; }
+  .hero-drone-wrap { animation: none; position: relative; z-index: 1; width: 100%; height: 100%; }
+  .hero-spotlight {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: none;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .hero-spotlight-img {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.45s ease;
+  }
+  .hero-spotlight-body {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 18px 20px;
+    background: linear-gradient(180deg, rgba(15,15,15,0) 0%, rgba(15,15,15,0.62) 100%);
+  }
+  .hero-kicker { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: rgba(255,255,255,0.76); text-transform: uppercase; margin-bottom: 6px; }
+  .hero-name { font-size: 24px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.4px; color: #fff; }
+  .hero-meta { color: rgba(255,255,255,0.88); font-size: 14px; }
+  .hero-dots { display: flex; gap: 8px; margin-top: 14px; }
+  .hero-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.65);
+    background: rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .hero-dot.active { background: var(--blue); border-color: var(--blue); transform: scale(1.1); }
+  .hero-live {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(15,15,15,0.9);
+    color: #fff;
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    z-index: 2;
+    font-family: 'Space Mono', monospace;
+  }
+  .hero-live::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2dff8a;
+    box-shadow: 0 0 0 0 rgba(45,255,138,0.6);
+    animation: pulseDot 1.6s infinite;
+  }
   @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  @keyframes pulseDot {
+    0% { box-shadow: 0 0 0 0 rgba(45,255,138,0.55); }
+    70% { box-shadow: 0 0 0 10px rgba(45,255,138,0); }
+    100% { box-shadow: 0 0 0 0 rgba(45,255,138,0); }
+  }
 
   /* TRUST BAR */
   .trust-bar {
@@ -84,17 +168,26 @@
   }
   .trust-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--mid); }
   .trust-icon { font-size: 18px; }
+  .live-pill {
+    background: #e8fff2;
+    color: #0c6e3a;
+    border: 1px solid #b5ebcd;
+    border-radius: 100px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+  }
 
   /* PRODUCTS */
-  .products-section { padding: 72px 48px; }
+  .products-section { padding: 48px 48px; }
   .section-label { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
-  .section-title { font-size: 32px; font-weight: 600; color: var(--dark); letter-spacing: -0.8px; margin-bottom: 40px; }
+  .section-title { font-size: 32px; font-weight: 600; color: var(--dark); letter-spacing: -0.8px; margin-bottom: 28px; }
 
-  .filter-tabs { display: flex; gap: 8px; margin-bottom: 40px; flex-wrap: wrap; }
+  .filter-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
   .tab { padding: 8px 18px; border-radius: 100px; border: 1px solid var(--border); font-size: 13px; color: var(--muted); cursor: pointer; background: transparent; font-family: 'Sora', sans-serif; transition: all 0.2s; }
   .tab:hover, .tab.active { background: var(--dark); color: #fff; border-color: var(--dark); }
 
-  .products-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+  .products-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
 
   .product-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; }
   .product-card:hover { border-color: #ccc; box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: translateY(-3px); }
@@ -104,19 +197,34 @@
     display: flex; align-items: center; justify-content: center;
     border-bottom: 1px solid var(--border); position: relative; overflow: hidden;
   }
+  .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .img-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .card-badge { position: absolute; top: 14px; left: 14px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; }
   .badge-sale { background: #ff3b3b; color: #fff; }
   .badge-new { background: var(--dark); color: #fff; }
   .badge-popular { background: var(--blue); color: #fff; }
 
-  .card-img svg { transition: transform 0.5s ease; }
-  .product-card:hover .card-img svg { transform: scale(1.06) translateY(-4px); }
+  .card-img svg,
+  .card-img img { transition: transform 0.5s ease; }
+  .product-card:hover .card-img svg,
+  .product-card:hover .card-img img { transform: scale(1.06) translateY(-4px); }
 
-  .card-body { padding: 22px; }
+  .card-body { padding: 18px; }
   .card-category { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
   .card-name { font-size: 18px; font-weight: 600; color: var(--dark); letter-spacing: -0.3px; margin-bottom: 8px; }
-  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; }
-  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
   .card-tag { font-size: 11px; color: var(--mid); background: var(--bg); padding: 3px 10px; border-radius: 100px; border: 1px solid var(--border); }
   .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--border); }
   .card-price { font-weight: 600; font-size: 20px; color: var(--dark); letter-spacing: -0.3px; }
@@ -124,24 +232,264 @@
   .add-btn { background: var(--dark); color: #fff; border: none; padding: 10px 18px; border-radius: 6px; font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: opacity 0.2s; }
   .add-btn:hover { opacity: 0.75; }
 
+  /* SCROLL STORY */
+  .scroll-story {
+    padding: 0 48px 48px;
+  }
+  .scroll-story-height {
+    height: 220vh;
+    position: relative;
+  }
+  .scroll-story-sticky {
+    position: sticky;
+    top: 76px;
+    height: calc(100vh - 100px);
+  }
+  .scroll-story-grid {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 16px;
+  }
+  .story-left {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #1e1e1e;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  .story-right {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #111;
+    position: relative;
+  }
+  .story-panel {
+    position: absolute;
+    inset: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+  .story-panel.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+  .story-panel h3 {
+    font-size: 34px;
+    letter-spacing: -0.8px;
+    line-height: 1.06;
+    margin-bottom: 12px;
+  }
+  .story-panel p {
+    color: rgba(255,255,255,0.74);
+    font-size: 14px;
+    line-height: 1.65;
+    margin-bottom: 0;
+  }
+  .story-step {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: #77ffd4;
+    margin-bottom: 12px;
+  }
+  .story-progress {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .story-progress-dot {
+    flex: 1;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.2);
+    overflow: hidden;
+  }
+  .story-progress-dot::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 100%;
+    background: #61ffc9;
+    transition: width 0.35s ease;
+  }
+  .story-progress-dot.active::after { width: 100%; }
+
+  .story-media {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.03);
+    transition: opacity 0.45s ease, transform 0.55s ease;
+  }
+  .story-media.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .story-media img,
+  .story-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* SERVICES */
+  .services-wrap {
+    padding: 0 48px 48px;
+  }
+  .service-block {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .service-head {
+    padding: 16px 28px 12px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #ffffff 0%, #faf8f4 100%);
+  }
+  .service-title {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .service-sub {
+    color: var(--mid);
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 720px;
+  }
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+  .parts-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+  .part-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  }
+  .part-card:hover {
+    transform: translateY(-2px);
+    border-color: #cbc7c0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  }
+  .part-img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    background: var(--bg);
+    display: block;
+  }
+  .part-body {
+    padding: 10px 12px 12px;
+  }
+  .part-name {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    margin-bottom: 3px;
+  }
+  .part-price {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--blue);
+    margin-bottom: 4px;
+  }
+  .part-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .service-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    padding: 16px;
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  }
+  .service-item:hover {
+    transform: translateY(-2px);
+    border-color: #cbc7c0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  }
+  .service-item h4 {
+    font-size: 15px;
+    margin-bottom: 6px;
+    letter-spacing: -0.2px;
+  }
+  .service-item p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .service-foot {
+    padding: 0 16px 12px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .service-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--dark);
+    color: #fff;
+    padding: 11px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .service-btn.alt {
+    background: #fff;
+    color: var(--dark);
+    border: 1px solid var(--border);
+  }
+
   /* LOCATION */
-  .location-section { background: var(--white); border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; min-height: 480px; }
-  .location-info { padding: 72px 64px; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid var(--border); }
+  .location-section { background: var(--white); border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; min-height: 380px; }
+  .location-info { padding: 36px 56px; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid var(--border); }
   .location-info .section-label { margin-bottom: 10px; }
   .location-info .section-title { margin-bottom: 28px; }
-  .location-details { display: flex; flex-direction: column; gap: 20px; }
+  .location-details { display: flex; flex-direction: column; gap: 16px; }
   .loc-row { display: flex; gap: 16px; align-items: flex-start; }
   .loc-icon { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; background: var(--bg); }
   .loc-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
   .loc-value { font-size: 14px; color: var(--dark); line-height: 1.5; }
   .loc-value a { color: var(--blue); text-decoration: none; }
-  .directions-btn { margin-top: 36px; display: inline-flex; align-items: center; gap: 8px; background: var(--dark); color: #fff; padding: 14px 24px; border-radius: 6px; font-size: 14px; font-weight: 500; text-decoration: none; width: fit-content; transition: opacity 0.2s; font-family: 'Sora', sans-serif; }
+  .directions-btn { margin-top: 24px; display: inline-flex; align-items: center; gap: 8px; background: var(--dark); color: #fff; padding: 14px 24px; border-radius: 6px; font-size: 14px; font-weight: 500; text-decoration: none; width: fit-content; transition: opacity 0.2s; font-family: 'Sora', sans-serif; }
   .directions-btn:hover { opacity: 0.8; }
   .location-map { position: relative; background: #e8e4de; overflow: hidden; }
   .location-map iframe { width: 100%; height: 100%; border: none; }
 
   /* FOOTER */
-  footer { background: var(--dark); color: rgba(255,255,255,0.4); padding: 40px 48px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+  footer { background: var(--dark); color: rgba(255,255,255,0.4); padding: 28px 48px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
   footer .logo { color: #fff; }
   .footer-links { display: flex; gap: 24px; }
   .footer-links a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 13px; transition: color 0.2s; }
@@ -160,7 +508,8 @@
   .empty-cart { text-align: center; padding: 64px 0; font-size: 14px; color: var(--muted); }
   .empty-icon { font-size: 40px; display: block; margin-bottom: 12px; }
   .cart-item { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--border); }
-  .item-thumb { width: 64px; height: 64px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+  .item-thumb { width: 64px; height: 64px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; overflow: hidden; }
+  .item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .item-name { font-size: 14px; font-weight: 500; color: var(--dark); margin-bottom: 4px; }
   .item-price { font-size: 13px; color: var(--muted); }
   .item-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; margin-left: auto; align-self: center; transition: color 0.2s; }
@@ -177,24 +526,136 @@
 
   @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+    filter: blur(2px);
+    transition: opacity 0.55s ease, transform 0.55s ease, filter 0.55s ease;
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .reveal[data-reveal="left"] { transform: translateX(-22px) scale(0.985); }
+  .reveal[data-reveal="right"] { transform: translateX(22px) scale(0.985); }
+  .reveal[data-reveal="zoom"] { transform: translateY(14px) scale(0.95); }
+  .reveal.in-view {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+    filter: blur(0);
+  }
+
+  /* SCROLL PARALLAX */
+  .parallax-layer { position: relative; }
+  .scroll-float {
+    will-change: transform;
+  }
+  .scroll-scale {
+    transform-origin: center center;
+  }
+  .text-reveal-char {
+    display: inline-block;
+    opacity: 0;
+    animation: charReveal 0.08s ease-out forwards;
+  }
+  @keyframes charReveal {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .card-img svg,
+    .card-img img,
+    .hero-drone-wrap,
+    .hero-live::before {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+      filter: none !important;
+      opacity: 1 !important;
+    }
+  }
+
+  .quickview {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 350;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .quickview.open { opacity: 1; pointer-events: all; }
+  .quickview-card {
+    width: min(840px, 100%);
+    max-height: 90vh;
+    overflow: auto;
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+  }
+  .quickview-img {
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    object-fit: cover;
+    background: var(--bg);
+  }
+  .quickview-body { padding: 24px; }
+  .quickview-title { font-size: 30px; line-height: 1.1; margin-bottom: 10px; letter-spacing: -0.6px; }
+  .quickview-desc { color: var(--mid); font-size: 14px; line-height: 1.7; margin-bottom: 14px; }
+  .quickview-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .quickview-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+  }
+
   @media(max-width:900px) {
     .topbar, nav, footer { padding: 12px 20px; }
     .nav-links { display: none; }
     .hero { grid-template-columns: 1fr; }
     .hero-right { display: none; }
-    .hero-left { padding: 60px 24px; }
+    .hero-left { padding: 32px 20px; }
     .trust-bar { padding: 16px 20px; gap: 24px; flex-wrap: wrap; justify-content: flex-start; }
     .products-section { padding: 48px 20px; }
     .products-grid { grid-template-columns: 1fr; }
+    .scroll-story { padding: 0 20px 48px; }
+    .scroll-story-height { height: auto; }
+    .scroll-story-sticky { position: static; height: auto; }
+    .scroll-story-grid { grid-template-columns: 1fr; }
+    .story-left,
+    .story-right { min-height: 340px; }
+    .story-panel { position: relative; opacity: 1; transform: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .story-panel:last-child { border-bottom: none; }
+    .story-media { position: relative; opacity: 1; transform: none; min-height: 220px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .story-media:last-child { border-bottom: none; }
+    .services-wrap { padding: 0 20px 48px; }
+    .parts-grid { grid-template-columns: 1fr 1fr; }
+    .service-grid { grid-template-columns: 1fr; }
     .location-section { grid-template-columns: 1fr; }
     .location-info { padding: 48px 24px; border-right: none; border-bottom: 1px solid var(--border); }
     .location-map { min-height: 300px; }
     footer { flex-direction: column; gap: 20px; text-align: center; }
     .cart-drawer { width: 100%; }
+    .quickview-card { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
 
 <!-- TOP BAR -->
 <div class="topbar">
@@ -233,62 +694,33 @@
   </div>
   <div class="hero-right">
     <div class="hero-drone-wrap">
-      <svg viewBox="0 0 440 340" xmlns="http://www.w3.org/2000/svg" width="380" height="300">
-        <defs>
-          <radialGradient id="heroGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="rgba(0,87,255,0.08)"/>
-            <stop offset="100%" stop-color="transparent"/>
-          </radialGradient>
-        </defs>
-        <ellipse cx="220" cy="170" rx="160" ry="100" fill="url(#heroGlow)"/>
-        <line x1="175" y1="148" x2="72" y2="82" stroke="#d0cdc8" stroke-width="10" stroke-linecap="round"/>
-        <line x1="265" y1="148" x2="368" y2="82" stroke="#d0cdc8" stroke-width="10" stroke-linecap="round"/>
-        <line x1="175" y1="192" x2="72" y2="258" stroke="#d0cdc8" stroke-width="10" stroke-linecap="round"/>
-        <line x1="265" y1="192" x2="368" y2="258" stroke="#d0cdc8" stroke-width="10" stroke-linecap="round"/>
-        <ellipse cx="72" cy="80" rx="50" ry="13" fill="none" stroke="#0057ff" stroke-width="1.5" opacity="0.2"/>
-        <ellipse cx="368" cy="80" rx="50" ry="13" fill="none" stroke="#0057ff" stroke-width="1.5" opacity="0.2"/>
-        <ellipse cx="72" cy="260" rx="50" ry="13" fill="none" stroke="#0057ff" stroke-width="1.5" opacity="0.2"/>
-        <ellipse cx="368" cy="260" rx="50" ry="13" fill="none" stroke="#0057ff" stroke-width="1.5" opacity="0.2"/>
-        <ellipse cx="72" cy="80" rx="46" ry="7" fill="#c8c5c0" transform="rotate(-18,72,80)"/>
-        <ellipse cx="72" cy="80" rx="46" ry="7" fill="#c8c5c0" transform="rotate(72,72,80)"/>
-        <ellipse cx="368" cy="80" rx="46" ry="7" fill="#c8c5c0" transform="rotate(22,368,80)"/>
-        <ellipse cx="368" cy="80" rx="46" ry="7" fill="#c8c5c0" transform="rotate(112,368,80)"/>
-        <ellipse cx="72" cy="260" rx="46" ry="7" fill="#c8c5c0" transform="rotate(12,72,260)"/>
-        <ellipse cx="72" cy="260" rx="46" ry="7" fill="#c8c5c0" transform="rotate(102,72,260)"/>
-        <ellipse cx="368" cy="260" rx="46" ry="7" fill="#c8c5c0" transform="rotate(-28,368,260)"/>
-        <ellipse cx="368" cy="260" rx="46" ry="7" fill="#c8c5c0" transform="rotate(62,368,260)"/>
-        <rect x="162" y="138" width="116" height="64" rx="20" fill="#f0ede8"/>
-        <rect x="167" y="143" width="106" height="54" rx="16" fill="#e8e4de"/>
-        <rect x="182" y="132" width="76" height="18" rx="9" fill="#dedad4"/>
-        <circle cx="192" cy="141" r="3.5" fill="#0057ff" opacity="0.7"/>
-        <circle cx="248" cy="141" r="3.5" fill="#ff9500" opacity="0.6"/>
-        <ellipse cx="220" cy="202" rx="20" ry="14" fill="#d8d4ce"/>
-        <circle cx="220" cy="204" r="13" fill="#ccc9c3"/>
-        <circle cx="220" cy="204" r="8" fill="#b0ada8"/>
-        <circle cx="220" cy="204" r="4.5" fill="#2a2a2a"/>
-        <circle cx="219" cy="203" r="1.5" fill="rgba(255,255,255,0.7)"/>
-        <circle cx="72" cy="80" r="6" fill="#e0ddd8"/>
-        <circle cx="368" cy="80" r="6" fill="#e0ddd8"/>
-        <circle cx="72" cy="260" r="6" fill="#e0ddd8"/>
-        <circle cx="368" cy="260" r="6" fill="#e0ddd8"/>
-        <ellipse cx="220" cy="315" rx="100" ry="9" fill="rgba(0,0,0,0.05)"/>
-      </svg>
+      <div class="hero-spotlight reveal" id="heroSpotlight">
+        <div class="hero-live">Live demand</div>
+        <img id="heroFeatureImage" class="hero-spotlight-img" src="image2.png" alt="Featured drone" loading="eager">
+        <div class="hero-spotlight-body">
+          <div class="hero-kicker">Featured Right Now</div>
+          <div class="hero-name" id="heroFeatureName">DJI Mini 4 Pro</div>
+          <div class="hero-meta" id="heroFeatureMeta">Lightweight, smart obstacle sensing, creator favorite.</div>
+          <div class="hero-dots" id="heroDots"></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- TRUST BAR -->
 <div class="trust-bar">
-  <div class="trust-item"><span class="trust-icon">🚚</span> Free delivery across Pakistan</div>
-  <div class="trust-item"><span class="trust-icon">🛡️</span> 2-year official warranty</div>
-  <div class="trust-item"><span class="trust-icon">💳</span> 0% installment plans</div>
+  <div class="trust-item"><span class="trust-icon">🚚</span> <span data-count="4200">0</span>+ deliveries across Pakistan</div>
+  <div class="trust-item"><span class="trust-icon">🛡️</span> <span data-count="2">0</span>-year official warranty</div>
+  <div class="trust-item"><span class="trust-icon">💳</span> <span data-count="12">0</span> partner installment plans</div>
   <div class="trust-item"><span class="trust-icon">⭐</span> 4.9 / 5 rating</div>
+  <div class="live-pill" id="liveViewers">Live now: 27 viewing</div>
 </div>
 
 <!-- PRODUCTS -->
 <section class="products-section" id="drones">
-  <div class="section-label">Our Collection</div>
-  <div class="section-title">Choose Your Drone</div>
+  <div class="section-label reveal">Our Collection</div>
+  <div class="section-title reveal">Choose Your Drone</div>
   <div class="filter-tabs">
     <button class="tab active" onclick="filter('all',this)">All</button>
     <button class="tab" onclick="filter('beginner',this)">Beginner Friendly</button>
@@ -299,11 +731,149 @@
   <div class="products-grid" id="productGrid"></div>
 </section>
 
+<section class="scroll-story reveal" id="why-us-scroll">
+  <div class="scroll-story-height">
+    <div class="scroll-story-sticky">
+      <div class="scroll-story-grid">
+        <div class="story-left">
+          <article class="story-panel active" data-story-panel="0">
+            <div>
+              <div class="story-step">Step 01</div>
+              <h3>From beginner flights to pro shoots in one ecosystem</h3>
+              <p>Start with Mini series and scale into Air/Mavic workflows without changing your support channel.</p>
+            </div>
+            <div class="story-progress">
+              <span class="story-progress-dot active"></span>
+              <span class="story-progress-dot"></span>
+              <span class="story-progress-dot"></span>
+            </div>
+          </article>
+          <article class="story-panel" data-story-panel="1">
+            <div>
+              <div class="story-step">Step 02</div>
+              <h3>Fast spare parts availability keeps your drone in the air</h3>
+              <p>Propellers, batteries, controllers, and filter kits are available with quick confirmation on WhatsApp.</p>
+            </div>
+            <div class="story-progress">
+              <span class="story-progress-dot active"></span>
+              <span class="story-progress-dot active"></span>
+              <span class="story-progress-dot"></span>
+            </div>
+          </article>
+          <article class="story-panel" data-story-panel="2">
+            <div>
+              <div class="story-step">Step 03</div>
+              <h3>Diagnosis and repairs with clear service workflow</h3>
+              <p>Crash to calibration, our workshop team handles inspection, quotation, repair, and final flight checks.</p>
+            </div>
+            <div class="story-progress">
+              <span class="story-progress-dot active"></span>
+              <span class="story-progress-dot active"></span>
+              <span class="story-progress-dot active"></span>
+            </div>
+          </article>
+        </div>
+        <div class="story-right">
+          <div class="story-media active" data-story-media="0">
+            <img src="image3.png" alt="DJI drone in action" loading="lazy">
+          </div>
+          <div class="story-media" data-story-media="1">
+            <img src="part2.jpg" alt="DJI spare battery" loading="lazy">
+          </div>
+          <div class="story-media" data-story-media="2">
+            <video autoplay loop muted playsinline>
+              <source src="https://assets-global.website-files.com/65ae37af356fab4845432048/65be104f9aba74d774b7f4a3_Yoda-Exploded-50-transcode.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services-wrap" id="spare-parts">
+  <div class="service-block reveal">
+    <div class="service-head">
+      <div class="section-label">Accessories & Parts</div>
+      <div class="service-title">Original DJI Spare Parts Available</div>
+      <div class="service-sub">Compact ready-stock picks for fast replacement and upgrade.</div>
+    </div>
+    <div class="parts-grid">
+      <article class="part-card">
+        <img class="part-img" src="part1.jpg" alt="DJI Mini Propeller Set" loading="lazy">
+        <div class="part-body">
+          <div class="part-name">DJI Mini Propeller Set</div>
+          <div class="part-price">PKR 4,900</div>
+          <div class="part-desc">Low-noise replacement blades with balanced lift.</div>
+        </div>
+      </article>
+      <article class="part-card">
+        <img class="part-img" src="part2.jpg" alt="DJI Intelligent Battery" loading="lazy">
+        <div class="part-body">
+          <div class="part-name">DJI Intelligent Battery</div>
+          <div class="part-price">PKR 26,500</div>
+          <div class="part-desc">Extended flight pack with safe power management.</div>
+        </div>
+      </article>
+      <article class="part-card">
+        <img class="part-img" src="part3.jpg" alt="DJI RC Controller" loading="lazy">
+        <div class="part-body">
+          <div class="part-name">DJI RC Controller</div>
+          <div class="part-price">PKR 58,000</div>
+          <div class="part-desc">Built-in display controller for quick takeoff.</div>
+        </div>
+      </article>
+      <article class="part-card">
+        <img class="part-img" src="part4.jpg" alt="DJI ND Filter Set" loading="lazy">
+        <div class="part-body">
+          <div class="part-name">DJI ND Filter Set</div>
+          <div class="part-price">PKR 12,900</div>
+          <div class="part-desc">Control shutter speed for smooth cinematic footage.</div>
+        </div>
+      </article>
+    </div>
+    <div class="service-foot">
+      <a class="service-btn" href="https://wa.me/923009400956" target="_blank">💬 Check Spare Part Availability</a>
+      <a class="service-btn alt" href="tel:+923009400956">📞 Call for Price List</a>
+    </div>
+  </div>
+
+  <div class="service-block reveal" id="repair-services">
+    <div class="service-head">
+      <div class="section-label">Workshop Services</div>
+      <div class="service-title">Drone Repairing Facilities Also Available</div>
+      <div class="service-sub">From minor crashes to advanced board-level issues, our technicians diagnose and repair DJI drones with transparent estimates and test flight checks.</div>
+    </div>
+    <div class="service-grid">
+      <article class="service-item">
+        <h4>Crash Damage Repair</h4>
+        <p>Arm replacement, shell restoration, landing gear fixes, and motor swaps.</p>
+      </article>
+      <article class="service-item">
+        <h4>Gimbal Calibration</h4>
+        <p>Horizon leveling, jitter correction, and camera stabilization tuning.</p>
+      </article>
+      <article class="service-item">
+        <h4>Signal & ESC Issues</h4>
+        <p>Controller link troubleshooting, ESC diagnostics, and firmware recovery.</p>
+      </article>
+      <article class="service-item">
+        <h4>Maintenance Checkups</h4>
+        <p>Preventive servicing, cleaning, health checks, and performance testing.</p>
+      </article>
+    </div>
+    <div class="service-foot">
+      <a class="service-btn" href="https://wa.me/923009400956" target="_blank">🛠️ Book a Repair Slot</a>
+      <a class="service-btn alt" href="#location">📍 Visit Service Desk</a>
+    </div>
+  </div>
+</section>
+
 <!-- LOCATION -->
 <section class="location-section" id="location">
   <div class="location-info">
-    <div class="section-label">Find Us</div>
-    <div class="section-title">Visit Our Store</div>
+    <div class="section-label reveal">Find Us</div>
+    <div class="section-title reveal">Visit Our Store</div>
     <div class="location-details">
       <div class="loc-row">
         <div class="loc-icon">📍</div>
@@ -375,17 +945,38 @@
 <!-- TOAST -->
 <div class="toast" id="toast">✓ <span id="toastMsg">Added to cart</span></div>
 
+<div class="quickview" id="quickView" onclick="closeQuickView(event)">
+  <div class="quickview-card">
+    <img id="qvImage" class="quickview-img" src="image1.png" alt="Drone preview">
+    <div class="quickview-body">
+      <button class="quickview-close" onclick="closeQuickView(event)">✕</button>
+      <div class="card-category" id="qvCategory">Beginner</div>
+      <div class="quickview-title" id="qvName">DJI Mini 3</div>
+      <div class="quickview-desc" id="qvDesc">Description</div>
+      <div class="quickview-tags" id="qvTags"></div>
+      <div class="card-price" id="qvPrice">PKR 74,900</div>
+      <div style="margin-top:16px">
+        <button class="add-btn" id="qvAddBtn">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const products = [
-  { id:1, tag:'beginner', category:'Beginner', badge:'popular', badgeLabel:'Most Popular', name:'DJI Mini 3', emoji:'🌟', desc:'The easiest drone to fly. Fits in your bag, no licence needed, and shoots stunning 4K photos.', tags:['4K Camera','38-min flight','Pocket-sized','No Licence Required'], priceOld:'PKR 89,000', price:'PKR 74,900', priceNum:74900 },
-  { id:2, tag:'photo', category:'Photography', badge:'new', badgeLabel:'New', name:'DJI Mini 4 Pro', emoji:'📸', desc:'Beautiful aerial photos with zero fuss. Smart obstacle avoidance keeps it safe while you focus on the shot.', tags:['4K/60fps','Obstacle Sensors','34-min flight','249g'], priceOld:'PKR 155,000', price:'PKR 138,500', priceNum:138500 },
-  { id:3, tag:'video', category:'Video & Film', badge:'', badgeLabel:'', name:'DJI Air 3', emoji:'🎬', desc:'Dual cameras, smooth cinematic footage, and 46-minute flight time. A favourite among travel creators.', tags:['4K/120fps','Dual Lens','46-min flight','ActiveTrack'], priceOld:'', price:'PKR 285,000', priceNum:285000 },
-  { id:4, tag:'video', category:'Video & Film', badge:'', badgeLabel:'', name:'DJI Avata 2', emoji:'⚡', desc:'Experience flying in first-person view. Stabilised 4K footage with an immersive cockpit feel.', tags:['4K FPV','Stabilised','Immersive','23-min'], priceOld:'', price:'PKR 198,000', priceNum:198000 },
-  { id:5, tag:'pro', category:'Professional', badge:'', badgeLabel:'', name:'DJI Mavic 3 Pro', emoji:'🏆', desc:'Three Hasselblad lenses. The gold standard for commercial photographers and serious filmmakers.', tags:['5.1K Hasselblad','Triple Lens','43-min','Pro Grade'], priceOld:'', price:'PKR 620,000', priceNum:620000 },
-  { id:6, tag:'pro', category:'Professional', badge:'', badgeLabel:'', name:'DJI Phantom 4 RTK', emoji:'🗺️', desc:'Centimetre-accurate GPS for land surveying, real estate mapping and engineering professionals.', tags:['RTK GPS','20MP','Mapping','30-min'], priceOld:'', price:'PKR 1,450,000', priceNum:1450000 }
+  { id:1, tag:'beginner', category:'Beginner', badge:'popular', badgeLabel:'Most Popular', name:'DJI Mini 3', image:'image1.png', desc:'The easiest drone to fly. Fits in your bag, no licence needed, and shoots stunning 4K photos.', tags:['4K Camera','38-min flight','Pocket-sized','No Licence Required'], priceOld:'PKR 89,000', price:'PKR 74,900', priceNum:74900 },
+  { id:2, tag:'photo', category:'Photography', badge:'new', badgeLabel:'New', name:'DJI Mini 4 Pro', image:'image2.png', desc:'Beautiful aerial photos with zero fuss. Smart obstacle avoidance keeps it safe while you focus on the shot.', tags:['4K/60fps','Obstacle Sensors','34-min flight','249g'], priceOld:'PKR 155,000', price:'PKR 138,500', priceNum:138500 },
+  { id:3, tag:'video', category:'Video & Film', badge:'', badgeLabel:'', name:'DJI Air 3', image:'image3.png', desc:'Dual cameras, smooth cinematic footage, and 46-minute flight time. A favourite among travel creators.', tags:['4K/120fps','Dual Lens','46-min flight','ActiveTrack'], priceOld:'', price:'PKR 285,000', priceNum:285000 },
+  { id:4, tag:'video', category:'Video & Film', badge:'', badgeLabel:'', name:'DJI Avata 2', image:'image4.png', desc:'Experience flying in first-person view. Stabilised 4K footage with an immersive cockpit feel.', tags:['4K FPV','Stabilised','Immersive','23-min'], priceOld:'', price:'PKR 198,000', priceNum:198000 },
+  { id:5, tag:'pro', category:'Professional', badge:'', badgeLabel:'', name:'DJI Mavic 3 Pro', image:'image5.png', desc:'Three Hasselblad lenses. The gold standard for commercial photographers and serious filmmakers.', tags:['5.1K Hasselblad','Triple Lens','43-min','Pro Grade'], priceOld:'', price:'PKR 620,000', priceNum:620000 },
+  { id:6, tag:'pro', category:'Professional', badge:'', badgeLabel:'', name:'DJI Phantom 4 RTK', image:'image6.png', desc:'Centimetre-accurate GPS for land surveying, real estate mapping and engineering professionals.', tags:['RTK GPS','20MP','Mapping','30-min'], priceOld:'', price:'PKR 1,450,000', priceNum:1450000 }
 ];
 
 let cart = [];
+let featuredIndex = 0;
+let featuredTimer = null;
+let revealObserver = null;
+let storyActiveIndex = 0;
 
 function droneSVG(id) {
   return `<svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" width="65%" height="65%">
@@ -424,10 +1015,11 @@ function droneSVG(id) {
 function renderProducts(f='all') {
   const list = f==='all' ? products : products.filter(p=>p.tag===f);
   document.getElementById('productGrid').innerHTML = list.map((p,i)=>`
-    <div class="product-card" style="animation:fadeUp 0.35s ${i*0.06}s both">
+    <div class="product-card reveal" data-id="${p.id}" style="animation:fadeUp 0.35s ${i*0.06}s both" onclick="openQuickView(${p.id})">
       <div class="card-img">
         ${p.badge ? `<div class="card-badge badge-${p.badge}">${p.badgeLabel}</div>` : ''}
-        ${droneSVG(p.id)}
+        <img src="${p.image}" alt="${p.name}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="img-fallback" style="display:none">${droneSVG(p.id)}</div>
       </div>
       <div class="card-body">
         <div class="card-category">${p.category}</div>
@@ -439,11 +1031,14 @@ function renderProducts(f='all') {
             ${p.priceOld?`<div class="card-price-old">${p.priceOld}</div>`:''}
             <div class="card-price">${p.price}</div>
           </div>
-          <button class="add-btn" onclick="addToCart(${p.id})">Add to Cart</button>
+          <button class="add-btn" onclick="addFromCard(${p.id},event)">Add to Cart</button>
         </div>
       </div>
     </div>
   `).join('');
+  applyCardTilt();
+  primeScrollAnimations();
+  setupRevealObserver();
 }
 
 function filter(f,el) {
@@ -460,6 +1055,11 @@ function addToCart(id) {
   showToast(`${p.name} added to cart`);
 }
 
+function addFromCard(id, ev) {
+  ev.stopPropagation();
+  addToCart(id);
+}
+
 function removeItem(id) {
   cart = cart.filter(x=>x.id!==id);
   updateCart();
@@ -471,7 +1071,7 @@ function updateCart() {
   const el = document.getElementById('drawerItems');
   el.innerHTML = cart.length ? cart.map(x=>`
     <div class="cart-item">
-      <div class="item-thumb">${x.emoji}</div>
+      <div class="item-thumb"><img src="${x.image}" alt="${x.name}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'; this.parentElement.textContent='🚁';"></div>
       <div style="flex:1">
         <div class="item-name">${x.name}${x.qty>1?' ×'+x.qty:''}</div>
         <div class="item-price">${x.price}</div>
@@ -491,7 +1091,368 @@ function showToast(msg) {
   setTimeout(()=>t.classList.remove('show'),2500);
 }
 
+function openQuickView(id) {
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('qvImage').src = p.image;
+  document.getElementById('qvImage').alt = p.name;
+  document.getElementById('qvCategory').textContent = p.category;
+  document.getElementById('qvName').textContent = p.name;
+  document.getElementById('qvDesc').textContent = p.desc;
+  document.getElementById('qvTags').innerHTML = p.tags.map(t=>`<span class="card-tag">${t}</span>`).join('');
+  document.getElementById('qvPrice').textContent = p.price;
+  document.getElementById('qvAddBtn').onclick = () => {
+    addToCart(p.id);
+    closeQuickView();
+  };
+  document.getElementById('quickView').classList.add('open');
+}
+
+function closeQuickView(ev) {
+  if(ev && ev.target && !ev.target.classList.contains('quickview') && !ev.target.classList.contains('quickview-close')) return;
+  document.getElementById('quickView').classList.remove('open');
+}
+
+function setupHeroSpotlight() {
+  const choices = products.slice(0, 5);
+  const dots = document.getElementById('heroDots');
+  dots.innerHTML = choices.map((_, i) => `<button class="hero-dot ${i===0?'active':''}" onclick="setFeatured(${i})" aria-label="Show featured drone ${i+1}"></button>`).join('');
+  setFeatured(0);
+  if(featuredTimer) clearInterval(featuredTimer);
+  featuredTimer = setInterval(() => {
+    setFeatured((featuredIndex + 1) % choices.length);
+  }, 3800);
+}
+
+function setFeatured(i) {
+  const choices = products.slice(0, 5);
+  featuredIndex = i;
+  const p = choices[i];
+  const img = document.getElementById('heroFeatureImage');
+  img.style.opacity = '0.2';
+  setTimeout(() => {
+    img.src = p.image;
+    img.alt = p.name;
+    document.getElementById('heroFeatureName').textContent = p.name;
+    document.getElementById('heroFeatureMeta').textContent = `${p.tags[0]} • ${p.tags[1]} • ${p.price}`;
+    img.style.opacity = '1';
+  }, 150);
+  document.querySelectorAll('.hero-dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
+}
+
+function setupLiveViewers() {
+  const el = document.getElementById('liveViewers');
+  let count = 27;
+  el.textContent = `Live now: ${count} viewing`;
+  setInterval(() => {
+    count += Math.floor(Math.random() * 7) - 3;
+    if(count < 18) count = 18;
+    if(count > 64) count = 64;
+    el.textContent = `Live now: ${count} viewing`;
+  }, 2600);
+}
+
+function animateCounters() {
+  const spans = document.querySelectorAll('[data-count]');
+  spans.forEach(span => {
+    const target = Number(span.dataset.count || '0');
+    let cur = 0;
+    const step = Math.max(1, Math.ceil(target / 45));
+    const tick = setInterval(() => {
+      cur += step;
+      if(cur >= target) {
+        cur = target;
+        clearInterval(tick);
+      }
+      span.textContent = cur.toLocaleString('en-PK');
+    }, 26);
+  });
+}
+
+function setupRevealObserver() {
+  if(!revealObserver) {
+    revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if(e.isIntersecting) {
+          e.target.classList.add('in-view');
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+  }
+  const nodes = document.querySelectorAll('.reveal');
+  nodes.forEach(n => {
+    if(!n.classList.contains('in-view')) revealObserver.observe(n);
+  });
+}
+
+function primeScrollAnimations() {
+  const sectionTargets = [
+    '.products-section',
+    '.services-wrap .service-block',
+    '.location-section',
+    'footer'
+  ];
+  sectionTargets.forEach((sel, sectionIndex) => {
+    document.querySelectorAll(sel).forEach(node => {
+      node.classList.add('reveal');
+      node.dataset.reveal = sectionIndex % 2 === 0 ? 'up' : 'zoom';
+      node.style.setProperty('--reveal-delay', `${sectionIndex * 40}ms`);
+    });
+  });
+
+  const staggerTargets = [
+    { selector: '.trust-item', effect: 'zoom', step: 50 },
+    { selector: '.tab', effect: 'zoom', step: 45 },
+    { selector: '.product-card', effect: 'up', step: 60 },
+    { selector: '.part-card', effect: 'up', step: 55 },
+    { selector: '.service-item', effect: 'right', step: 55 },
+    { selector: '.loc-row', effect: 'left', step: 65 },
+    { selector: '.footer-links a', effect: 'zoom', step: 40 }
+  ];
+
+  staggerTargets.forEach(group => {
+    document.querySelectorAll(group.selector).forEach((node, i) => {
+      node.classList.add('reveal');
+      node.dataset.reveal = group.effect;
+      node.style.setProperty('--reveal-delay', `${i * group.step}ms`);
+    });
+  });
+}
+
+function setupScrollProgress() {
+  const bar = document.getElementById('scrollProgress');
+  if(!bar) return;
+  const update = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? (window.scrollY / max) * 100 : 0;
+    bar.style.width = `${Math.max(0, Math.min(100, p))}%`;
+  };
+  update();
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+}
+
+function setStoryState(index) {
+  if(index === storyActiveIndex) return;
+  storyActiveIndex = index;
+  document.querySelectorAll('[data-story-panel]').forEach((panel, i) => {
+    panel.classList.toggle('active', i === index);
+  });
+  document.querySelectorAll('[data-story-media]').forEach((media, i) => {
+    media.classList.toggle('active', i === index);
+  });
+}
+
+function setupStoryScrollEffect() {
+  const section = document.getElementById('why-us-scroll');
+  if(!section) return;
+  const panels = section.querySelectorAll('[data-story-panel]');
+  const media = section.querySelectorAll('[data-story-media]');
+  if(!panels.length || panels.length !== media.length) return;
+
+  const activateFromScroll = () => {
+    if(window.innerWidth <= 900) {
+      setStoryState(0);
+      return;
+    }
+    const total = section.offsetHeight - window.innerHeight;
+    const offset = Math.min(Math.max(window.scrollY - (section.offsetTop - 90), 0), total);
+    const progress = total > 0 ? offset / total : 0;
+    const index = Math.min(panels.length - 1, Math.floor(progress * panels.length));
+    setStoryState(index);
+  };
+
+  activateFromScroll();
+  window.addEventListener('scroll', activateFromScroll, { passive: true });
+  window.addEventListener('resize', activateFromScroll);
+}
+
+function applyCardTilt() {
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.onmousemove = (e) => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = `perspective(900px) rotateX(${(-y*5).toFixed(2)}deg) rotateY(${(x*6).toFixed(2)}deg) translateY(-3px)`;
+    };
+    card.onmouseleave = () => {
+      card.style.transform = '';
+    };
+  });
+}
+
+function setupScrollParallax() {
+  if (typeof gsap === 'undefined' || !gsap.registerPlugin) return;
+  
+  // Parallax on product cards
+  document.querySelectorAll('.product-card').forEach(card => {
+    gsap.to(card, {
+      y: -20,
+      scrollTrigger: {
+        trigger: card,
+        start: 'top 80%',
+        end: 'bottom 20%',
+        scrub: 0.8,
+        markers: false
+      }
+    });
+  });
+
+  // Parallax on service items
+  document.querySelectorAll('.service-item').forEach((item, i) => {
+    const direction = i % 2 === 0 ? -15 : 15;
+    gsap.to(item, {
+      x: direction,
+      opacity: 0.85 + (i % 2) * 0.15,
+      scrollTrigger: {
+        trigger: item,
+        start: 'top 85%',
+        end: 'bottom 15%',
+        scrub: 1,
+        markers: false
+      }
+    });
+  });
+
+  // Parallax on spare parts cards
+  document.querySelectorAll('.part-card').forEach((card, i) => {
+    gsap.to(card, {
+      y: (i % 2) * 12 - 6,
+      x: ((i % 3) - 1) * 8,
+      rotateZ: ((i % 2) * 0.8 - 0.4),
+      scrollTrigger: {
+        trigger: card,
+        start: 'top 80%',
+        end: 'bottom 20%',
+        scrub: 0.7,
+        markers: false
+      }
+    });
+  });
+}
+
+function setupScrollScale() {
+  if (typeof gsap === 'undefined' || !gsap.registerPlugin) return;
+  
+  // Scale effect for section titles
+  document.querySelectorAll('.section-title').forEach(title => {
+    gsap.fromTo(title, 
+      { scale: 0.88, opacity: 0.4 },
+      {
+        scale: 1,
+        opacity: 1,
+        scrollTrigger: {
+          trigger: title,
+          start: 'top 75%',
+          end: 'top 45%',
+          scrub: 1,
+          markers: false
+        }
+      }
+    );
+  });
+
+  // Scale effect for product cards on entry
+  document.querySelectorAll('.product-card').forEach((card, i) => {
+    gsap.fromTo(card,
+      { scale: 0.92, opacity: 0.6 },
+      {
+        scale: 1,
+        opacity: 1,
+        delay: i * 0.05,
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 85%',
+          end: 'top 60%',
+          scrub: 0.5,
+          markers: false
+        }
+      }
+    );
+  });
+}
+
+function setupFloatingAnimations() {
+  if (typeof gsap === 'undefined') return;
+  
+  // Floating effect on service items
+  document.querySelectorAll('.service-item').forEach((item, i) => {
+    const duration = 2.5 + (i % 2) * 0.4;
+    gsap.to(item, {
+      y: -8,
+      duration: duration,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      transformOrigin: 'center center'
+    });
+  });
+}
+
+function setupTextReveal() {
+  // Character-by-character reveal for headings on scroll
+  document.querySelectorAll('.hero h1, .section-title, .service-title').forEach(el => {
+    const text = el.textContent;
+    const isFirstRun = true;
+    
+    gsap.to(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 75%',
+        end: 'top 50%',
+        scrub: 0.3,
+        onEnter: () => {
+          if (!el.dataset.revealed) {
+            el.dataset.revealed = 'true';
+            el.innerHTML = text.split('').map((char, i) => {
+              const delay = i * 0.03;
+              return `<span class="text-reveal-char" style="animation-delay: ${delay}s">${char}</span>`;
+            }).join('');
+          }
+        }
+      }
+    });
+  });
+}
+
+function setupScrollRipple() {
+  if (typeof gsap === 'undefined' || !gsap.registerPlugin) return;
+  
+  // Ripple/wave effect on cards as they pass the center
+  const cards = document.querySelectorAll('.product-card');
+  cards.forEach((card, i) => {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: card,
+        start: 'center center',
+        end: 'center 40%',
+        scrub: 0.6,
+        onUpdate: (self) => {
+          const delay = Math.sin(self.progress * Math.PI + i * 0.3) * 0.02;
+          gsap.set(card, {
+            boxShadow: `0 ${6 + Math.sin(self.progress * Math.PI) * 8}px ${14 + Math.cos(self.progress * Math.PI) * 6}px rgba(0,87,255,${0.05 + Math.sin(self.progress * Math.PI) * 0.08})`
+          });
+        }
+      }
+    });
+  });
+}
+
 renderProducts();
+primeScrollAnimations();
+setupHeroSpotlight();
+setupLiveViewers();
+animateCounters();
+setupRevealObserver();
+setupScrollProgress();
+setupStoryScrollEffect();
+applyCardTilt();
+setupScrollParallax();
+setupScrollScale();
+setupFloatingAnimations();
+setupTextReveal();
+setupScrollRipple();
 </script>
 </body>
 </html>
